@@ -38,6 +38,39 @@
           <p id="d-prime">D' = <span id="out-dprime">???</span></p>
           <p id="d-prime">Critical speed = <span id="out-v">???</span></p>
           <svg id="graph" width="300" height="300"></svg>
+          <table>
+            <thead>
+              <th>
+                <td>Interval distance</td>
+                <td>Race pace</td>
+                <td>80% D' pace</td>
+                <td>80% D' float</td>
+                <td>60% D' pace</td>
+                <td>60% D' float</td>
+                <td>40% D' pace</td>
+                <td>40% D' float</td>
+              </th>
+            </thead>
+            <tbody id="intervals"></tbody>
+          </table>
+          <table>
+            <thead>
+              <th>Race distance</th>
+              <th>Target pace</th>
+              <th>Target time</th>
+            </thead>
+            <tbody id="races">
+            </tbody>
+          </table>
+          <table>
+            <thead>
+              <th>% critical pace</th>
+              <th>Pace</th>
+              <th>Marathon Time</th>
+            </thead>
+            <tbody id="marathon">
+            </tbody>
+          </table>
         </div>
       </div>
       <script>
@@ -90,14 +123,31 @@
          term2 += xr * xr;
        }
        
+       function s_to_min (s) {
+         let hrs = "", mins = 0;
+         if (s >= 3600) {
+           hrs = Math.floor(s / 3600) + ":";
+           s = s % 3600;
+           mins = (Math.floor(s / 60) + "").padStart(2, "0");
+         } else {
+           mins = Math.floor(s / 60);
+         }
+         return hrs + mins + ":" + 
+          (Math.round(s * 10 % 600) / 10).toFixed(1).padStart(4, "0");
+       }
+       function s_to_pace(s) {
+        return s_to_min(s)  + " min / km";
+       }
+       function v_to_pace(v) {
+        return s_to_pace(1000 / v);        
+       }
+       
        var m = term1 / term2;
        var c = dbar - (m * tbar);
        document.getElementById("out-dprime").innerHTML = c.toPrecision(4) + " m";
-       let s_per_km = 1000 / m;
        document.getElementById("out-v").innerHTML = 
          m.toPrecision(4) + " m/s" + " = " +
-          Math.floor(s_per_km / 60) + ":" + 
-          (Math.round(s_per_km * 10 % 600) / 10) + "&nbsp;min / km";
+          v_to_pace(m);
              
         x.domain([0, d3.max(data, d => d.t)]);
         y.domain([0, d3.max(data, d => d.d)]);
@@ -126,6 +176,45 @@
         svg.append("g")
          .call(d3.axisLeft(y));
 
+        var ints = d3.select("#intervals");
+        var races = d3.select("#races");
+        var raceRows = races.selectAll("tr")
+          .data([1500, 1609, 3000, 5000, 5 * 1609.34, 10000, 16093.4, 21090])
+          .enter()
+          .append("tr");
+          
+        var raceCells = raceRows.selectAll("td")
+          .data(function(d, i) {
+            let t = (d - c) / m;
+            return [
+              d + " m",
+              s_to_pace(t * 1000 / d),
+              s_to_min(t)
+              ];
+          })
+          .enter()
+          .append("td").text(d => d)
+        
+        var mara = d3.select("#marathon");
+        var maraRows = mara.selectAll("tr")
+          .data([96, 90, 85])
+          .enter()
+          .append("tr");
+          
+        var maraCells = maraRows.selectAll("td")
+          .data(function(d, i) {
+            let v = m * d / 100;
+            return [
+              d + " %",
+              v_to_pace(v),
+              s_to_min(42195 / v)
+              ];
+          })
+          .enter()
+          .append("td").text(d => d)
+        
+        
+        
       </script>
    </body>
 </html>
