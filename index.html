@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" encoding="UTF-8">
+   <head>
+      <script src = "https://d3js.org/d3.v4.min.js"></script>
+      <link rel="stylesheet" href="style.css"/>
+      
+   </head>
+
+   <body>
+      <div id="content">
+        <div id="inputs">
+          <div class="input">
+            <input class="distance" value="5000"/>m in 
+            <input class="time" value="1111"/>s
+          </div>
+          <div class="input">
+            <input class="distance" value="1609"/>m in 
+            <input class="time" value = "298.5"/>s
+          </div>
+          <div class="input">
+            <input class="distance" value="10000"/>m in 
+            <input class="time" value = "2300"/>s
+          </div>
+          <div class="input">
+            <input class="distance" value=""/>m in 
+            <input class="time" value = ""/>s
+          </div>
+          <div class="input">
+            <input class="distance" value=""/>m in 
+            <input class="time" value = ""/>s
+          </div>
+          <div class="input">
+            <input class="distance" value=""/>m in 
+            <input class="time" value = ""/>s
+          </div>
+        </div>
+        <div id="output">
+          <p id="d-prime">D' = <span id="out-dprime">???</span></p>
+          <p id="d-prime">Critical speed = <span id="out-v">???</span></p>
+          <svg id="graph" width="300" height="300"></svg>
+        </div>
+      </div>
+      <script>
+        "use strict";
+        var svgWidth = 960,
+        svgHeight = 500,
+        margin = {top: 20, right: 20, bottom: 30, left: 50},
+        width = svgWidth- margin.left - margin.right,
+        height = svgHeight - margin.top - margin.bottom;
+       
+       var x = d3.scaleLinear().range([0, width]);
+       var y = d3.scaleLinear().range([height, 0]);
+              
+       var svg = d3.select("#graph")
+         .attr("width", svgWidth)
+         .attr("height", svgHeight)
+         .append("g").attr("transform",
+           "translate(" + margin.left + "," + margin.top + ")");
+       
+       
+       var data = [], distance = [], time = [], dbar = 0, tbar = 0;
+       d3.selectAll(".input").each(function(d) {
+         let datum = {};
+         datum.d = +d3.select(this).select(".distance").property("value");
+         datum.t = +d3.select(this).select(".time").property("value");
+         if (typeof(datum.d) == "number" && datum.d > 0 
+         && typeof(datum.t) == "number" && datum.t > 0) {
+           distance.push(datum.d);
+           time.push(datum.t);
+           datum.v = datum.d / datum.t;
+           dbar += datum.d;
+           tbar += datum.t;
+           data.push(datum); 
+         }
+       });
+       
+       let n = distance.length;
+       if (n < 2) {
+         throw "Error: Two data points needed";
+       }
+       dbar /= n;
+       tbar /= n;
+       
+       // Calculate coefficients
+       let xy = 0, yr = 0, term1 = 0, term2 = 0;
+       for (let i = 0; i != n; ++i) {
+         let xr = time[i] - tbar;
+         let yr = distance[i] - dbar;
+         term1 += xr * yr;
+         term2 += xr * xr;
+       }
+       
+       var m = term1 / term2;
+       var c = dbar - (m * tbar);
+       document.getElementById("out-dprime").innerHTML = c.toPrecision(4) + " m";
+       let s_per_km = 1000 / m;
+       document.getElementById("out-v").innerHTML = 
+         m.toPrecision(4) + " m/s" + " = " +
+          Math.floor(s_per_km / 60) + ":" + 
+          (Math.round(s_per_km * 10 % 600) / 10) + "&nbsp;min / km";
+             
+        x.domain([0, d3.max(data, d => d.t)]);
+        y.domain([0, d3.max(data, d => d.d)]);
+       
+        svg.append("g")
+         .selectAll("dot")
+         .data(data)
+         .enter()
+         .append("circle")
+           .attr("cx", d => x(d.t))
+           .attr("cy", d => y(d.d))
+           .attr("r", 3.5)
+           .style("fill", "#158253");
+      
+        svg.append("path")
+          .datum([0, 400, 10000])
+          .attr("class", "line")
+          .attr("d", d3.line()
+        .x(d => d)
+        .y(d => ((m * d) + c)));
+       
+        svg.append("g")
+         .attr("transform", "translate(0," + height + ")")
+         .call(d3.axisBottom(x));
+       
+        svg.append("g")
+         .call(d3.axisLeft(y));
+
+      </script>
+   </body>
+</html>
