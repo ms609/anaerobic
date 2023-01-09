@@ -40,16 +40,14 @@
           <svg id="graph" width="300" height="300"></svg>
           <table>
             <thead>
-              <th>
-                <td>Interval distance</td>
-                <td>Race pace</td>
-                <td>80% D' pace</td>
-                <td>80% D' float</td>
-                <td>60% D' pace</td>
-                <td>60% D' float</td>
-                <td>40% D' pace</td>
-                <td>40% D' float</td>
-              </th>
+              <th>Interval distance</th>
+              <th>Max pace</th>
+              <th>80% D' pace</th>
+              <th>80% D' float</th>
+              <th>60% D' pace</th>
+              <th>60% D' float</th>
+              <th>40% D' pace</th>
+              <th>40% D' float</th>
             </thead>
             <tbody id="intervals"></tbody>
           </table>
@@ -212,8 +210,6 @@
           })
           .enter()
           .append("td").text(d => d)
-        
-        
         
       </script>
    </body>
