@@ -40,16 +40,32 @@
           <svg id="graph" width="300" height="300"></svg>
           <table>
             <thead>
-              <th>Interval distance</th>
-              <th>Max pace</th>
-              <th>80% D' pace</th>
-              <th>80% D' float</th>
-              <th>60% D' pace</th>
-              <th>60% D' float</th>
-              <th>40% D' pace</th>
-              <th>40% D' float</th>
+              <tr>
+              <th colspan=2></th>
+              <th colspan=3>× 3 @ 80% D' </th>
+              <th colspan=3>× 4–5 @ 60% D' </th>
+              <th colspan=3>× 12? @ 40% D'</th>
+              </tr>
+              <tr>
+                <th>Interval</th>
+                <th>Pace @ 100%</th>
+                <th>pace</th>
+                <th>time</th>
+                <th>float</th>
+                <th>pace</th>
+                <th>time</th>
+                <th>float</th>
+                <th>pace</th>
+                <th>time</th>
+                <th>float</th>
+              </tr>
             </thead>
             <tbody id="intervals"></tbody>
+            <tfoot>
+              <td colspan=6>
+              Choose intervals between 90–300 s (1:30–5:00)
+              </td>
+            </tfoot>
           </table>
           <table>
             <thead>
@@ -180,6 +196,40 @@
          .call(d3.axisLeft(y));
 
         var ints = d3.select("#intervals");
+        var intRows = ints.selectAll("tr")
+          .data([1000, 1200, 1500, 1600, 2000])
+          .enter()
+          .append("tr");
+        
+        
+        function t_at(d, pc) {
+          return (d - (c * pc / 100)) / m;
+        }
+        
+        function v_at(d, pc) {
+          return (c * pc / 100) / t_at(d, pc) + m;
+        } 
+        
+        var intCells = intRows.selectAll("td")
+          .data(function(d, i) {
+            
+            return [
+              d + " m",
+              v_to_pace(v_at(d, 100)),
+              v_to_pace(v_at(d, 80)),
+              s_to_min(t_at(d, 80)),
+              s_to_min(t_at(d, 80) * 1.5),
+              v_to_pace(v_at(d, 60)),
+              s_to_min(t_at(d, 60)),
+              s_to_min(t_at(d, 60)),
+              v_to_pace(v_at(d, 40)),
+              s_to_min(t_at(d, 40)),
+              s_to_min(t_at(d, 40) * 0.5)
+              ];
+          })
+          .enter()
+          .append("td").text(d => d)
+          
         var races = d3.select("#races");
         var raceRows = races.selectAll("tr")
           .data([1500, 1609, 3000, 5000, 5 * 1609.34, 10000, 16093.4, 21090])
