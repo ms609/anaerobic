@@ -37,7 +37,7 @@
         <div id="output">
           <p id="d-prime">D' = <span id="out-dprime">???</span></p>
           <p id="d-prime">Critical speed = <span id="out-v">???</span></p>
-          <svg id="graph" width="300" height="300"></svg>
+          <svg id="graph" width="400" height="300"></svg>
           <table>
             <thead>
               <tr>
@@ -94,10 +94,10 @@
       </div>
       <script>
         "use strict";
-        var svgWidth = 960,
-        svgHeight = 500,
+        var svgWidth = document.getElementById("graph").width.baseVal.value,
+          svgHeight = document.getElementById("graph").height.baseVal.value,
         margin = {top: 20, right: 20, bottom: 30, left: 50},
-        width = svgWidth- margin.left - margin.right,
+        width = svgWidth - margin.left - margin.right,
         height = svgHeight - margin.top - margin.bottom;
        
        var x = d3.scaleLinear().range([0, width]);
