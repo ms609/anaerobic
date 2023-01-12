@@ -171,6 +171,18 @@
         x.domain([0, d3.max(data, d => d.t)]);
         y.domain([0, d3.max(data, d => d.d)]);
        
+        // Line of best fit
+        svg.append("path")
+          .datum([0, 400, 10000])
+          .attr("class", "line")
+          .attr(
+            "d",
+             d3.line()
+              .x(d => x(d))
+              .y(d => y((m * d) + c))
+          );
+       
+        // Points
         svg.append("g")
          .selectAll("dot")
          .data(data)
@@ -179,14 +191,8 @@
            .attr("cx", d => x(d.t))
            .attr("cy", d => y(d.d))
            .attr("r", 3.5)
-           .style("fill", "#158253");
+           .style("fill", "#d86713");
       
-        svg.append("path")
-          .datum([0, 400, 10000])
-          .attr("class", "line")
-          .attr("d", d3.line()
-        .x(d => d)
-        .y(d => ((m * d) + c)));
        
         svg.append("g")
          .attr("transform", "translate(0," + height + ")")
