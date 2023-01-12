@@ -45,7 +45,7 @@
               <g id="yAxis"></g>
             </g>
           </svg>
-          <table>
+          <table id="intervals">
             <thead>
               <tr>
               <th colspan=2></th>
@@ -67,29 +67,29 @@
                 <th>float</th>
               </tr>
             </thead>
-            <tbody id="intervals"></tbody>
+            <tbody></tbody>
             <tfoot>
               <td colspan=6>
               Choose intervals between 90–300 s (1:30–5:00)
               </td>
             </tfoot>
           </table>
-          <table>
+          <table id="races">
             <thead>
               <th>Race distance</th>
               <th>Target pace</th>
               <th>Target time</th>
             </thead>
-            <tbody id="races">
+            <tbody>
             </tbody>
           </table>
-          <table>
+          <table id="marathon">
             <thead>
               <th>% critical pace</th>
               <th>Pace</th>
               <th>Marathon Time</th>
             </thead>
-            <tbody id="marathon">
+            <tbody>
             </tbody>
           </table>
         </div>
@@ -105,7 +105,6 @@
         "use strict";
         var svg = d3.select("#graph")
         var plot = d3.select("#plotFrame")
-        var races = d3.select("#races");
 
 
         update();

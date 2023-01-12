@@ -94,23 +94,22 @@ function update() {
 	var points = d3
 	  .select("#points")
 		.selectAll("circle")
-	  .data(data, d => d.row);
-
-  points.join(
-		enter =>
-			enter.append("circle")
-	      .attr("cx", d => x(d.t))
-	      .attr("cy", d => y(d.d))
-	      .attr("r", 3.5)
-	      .style("fill", "#d86713"),
-		update =>
-			update
-	      .attr("cx", d => x(d.t))
-	      .attr("cy", d => y(d.d))
-	      .attr("r", 3.5)
-	      .style("fill", "#d86713"),
-		exit => exit.remove()
-	);
+	  .data(data, d => d.row)
+		.join(
+			enter =>
+				enter.append("circle")
+		      .attr("cx", d => x(d.t))
+		      .attr("cy", d => y(d.d))
+		      .attr("r", 3.5)
+		      .style("fill", "#d86713"),
+			update =>
+				update
+		      .attr("cx", d => x(d.t))
+		      .attr("cy", d => y(d.d))
+		      .attr("r", 3.5)
+		      .style("fill", "#d86713"),
+			exit => exit.remove()
+		);
 
   plot.select("#xAxis")
    .attr("transform", "translate(0," + height + ")")
@@ -119,7 +118,8 @@ function update() {
   plot.select("#yAxis")
    .call(d3.axisLeft(y));
 
-  var ints = d3.select("#intervals");
+  var ints = d3.select("#intervals tbody");
+	ints.selectAll("tr").remove();
   var intRows = ints.selectAll("tr")
     .data([1000, 1200, 1500, 1600, 2000])
     .enter()
@@ -133,9 +133,8 @@ function update() {
 	  return (c * pc / 100) / t_at(d, pc) + m;
 	}
 
-  var intCells = intRows.selectAll("td")
+	var intCells = intRows.selectAll("td")
     .data(function(d, i) {
-
       return [
         d + " m",
         v_to_pace(v_at(d, 100)),
@@ -150,9 +149,13 @@ function update() {
         s_to_min(t_at(d, 40) * 0.5)
         ];
     })
-    .enter()
-    .append("td").text(d => d)
+    .join(
+			enter => enter.append("td").text(d => d),
+			update => update.text(d => d)
+		);
 
+	var races = d3.select("#races tbody");
+	races.selectAll("tr").remove();
   var raceRows = races.selectAll("tr")
     .data([1500, 1609, 3000, 5000, 5 * 1609.34, 10000, 16093.4, 21090])
     .enter()
@@ -170,7 +173,8 @@ function update() {
     .enter()
     .append("td").text(d => d)
 
-  var mara = d3.select("#marathon");
+  var mara = d3.select("#marathon tbody");
+	mara.selectAll("tr").remove();
   var maraRows = mara.selectAll("tr")
     .data([96, 90, 85])
     .enter()
