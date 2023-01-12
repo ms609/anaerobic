@@ -17,11 +17,12 @@ function update() {
 				"translate(" + margin.left + "," + margin.top + ")");
 
 
- var data = [], distance = [], time = [], dbar = 0, tbar = 0;
+ var data = [], distance = [], time = [], dbar = 0, tbar = 0, i = 0;
  d3.selectAll(".input").each(function(d) {
    let datum = {};
    datum.d = +d3.select(this).select(".distance").property("value");
    datum.t = +d3.select(this).select(".time").property("value");
+	 datum.row = i++;
    if (typeof(datum.d) == "number" && datum.d > 0
    && typeof(datum.t) == "number" && datum.t > 0) {
      distance.push(datum.d);
@@ -90,16 +91,26 @@ function update() {
     );
 
   // Points
-  plot.select("#points")
-	  .selectAll("dot")
-    .data(data)
-		.enter()
-		.append("circle")
-      .attr("cx", d => x(d.t))
-      .attr("cy", d => y(d.d))
-      .attr("r", 3.5)
-      .style("fill", "#d86713")
-	;
+	var points = d3
+	  .select("#points")
+		.selectAll("circle")
+	  .data(data, d => d.row);
+
+  points.join(
+		enter =>
+			enter.append("circle")
+	      .attr("cx", d => x(d.t))
+	      .attr("cy", d => y(d.d))
+	      .attr("r", 3.5)
+	      .style("fill", "#d86713"),
+		update =>
+			update
+	      .attr("cx", d => x(d.t))
+	      .attr("cy", d => y(d.d))
+	      .attr("r", 3.5)
+	      .style("fill", "#d86713"),
+		exit => exit.remove()
+	);
 
   plot.select("#xAxis")
    .attr("transform", "translate(0," + height + ")")
