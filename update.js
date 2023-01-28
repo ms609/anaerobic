@@ -21,10 +21,15 @@ function update() {
  d3.selectAll(".input").each(function(d) {
    let datum = {};
    datum.d = +d3.select(this).select("input.distance").property("value");
+   let sec_value = d3.select(this).select("input.secs").property("value");
    datum.t = in_seconds(
 	   d3.select(this).select("input.mins").property("value"),
-	   d3.select(this).select("input.secs").property("value")
+	   sec_value
    );
+   if (sec_value < 10 && sec_value[0] != "0") {
+	   d3.select(this).select("input.secs").property("value",
+	   "0" + sec_value);
+   }
    datum.row = i++;
    if (typeof(datum.d) == "number" && datum.d > 0
    && typeof(datum.t) == "number" && datum.t > 0) {
