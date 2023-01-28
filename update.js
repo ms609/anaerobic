@@ -10,11 +10,11 @@ function update() {
 
   var
     x = d3.scaleLinear().range([0, width]),
-	  y = d3.scaleLinear().range([height, 0])
+	y = d3.scaleLinear().range([height, 0])
   ;
 
-	plot.attr("transform",
-				"translate(" + margin.left + "," + margin.top + ")");
+  plot.attr("transform",
+     		"translate(" + margin.left + "," + margin.top + ")");
 
 
  var data = [], distance = [], time = [], dbar = 0, tbar = 0, i = 0;
