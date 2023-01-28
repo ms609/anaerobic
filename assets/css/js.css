@@ -1,0 +1,35 @@
+span.distance::after {
+  content: " m";
+}
+
+span.mins::after {
+  content: ":";
+  padding: 0.2em;
+}
+
+
+input.distance {
+  width: 5em;
+  text-align: right;
+}
+
+input.secs {
+  width: 4em;
+}
+
+input.mins {
+  text-align: right;
+  width: 3em;
+}
+
+input:invalid + span::after {
+  position: absolute;
+  content: "✖";
+  padding-left: 5px;
+}
+
+input:valid + span::after {
+  position: absolute;
+  content: "✓";
+  padding-left: 5px;
+}

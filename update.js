@@ -20,9 +20,12 @@ function update() {
  var data = [], distance = [], time = [], dbar = 0, tbar = 0, i = 0;
  d3.selectAll(".input").each(function(d) {
    let datum = {};
-   datum.d = +d3.select(this).select(".distance").property("value");
-   datum.t = +d3.select(this).select(".time").property("value");
-	 datum.row = i++;
+   datum.d = +d3.select(this).select("input.distance").property("value");
+   datum.t = in_seconds(
+	   d3.select(this).select("input.mins").property("value"),
+	   d3.select(this).select("input.secs").property("value")
+   );
+   datum.row = i++;
    if (typeof(datum.d) == "number" && datum.d > 0
    && typeof(datum.t) == "number" && datum.t > 0) {
      distance.push(datum.d);
