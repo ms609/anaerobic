@@ -245,4 +245,5 @@ function updateUnits() {
   let useMetric = document.getElementById("useMetric").checked;
   localStorage.setItem("useMetric", useMetric);
   unit = metricUnits(useMetric);
+  update()
 }
