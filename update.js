@@ -78,8 +78,10 @@ addDatum()
  document.getElementById("outDPrime").innerHTML = "" + dPrimeText(c);
  document.getElementById("outV").innerHTML = vText(m);
 
-  x.domain([0, d3.max(data, d => d.mins)]);
-  y.domain([0, d3.max(data, d => d.d)]);
+  let maxMins = d3.max(data, d => d.mins);
+  let maxDist = d3.max(data, d => d.d);
+  x.domain([0, maxMins]);
+  y.domain([0, maxDist]);
 
   // Line of best fit
   plot.select("#criticalLine")
@@ -92,13 +94,18 @@ addDatum()
         .y(d => y((m * d * secsInMin) + c))
   );
   
-  plot.select("#criticalText")
+  console.log(x(maxMins))
+  console.log(y(c))
+  plot.select("#gCriticalText")
     .attr("transform", "translate(" + 
       (width / 2) + ", " +
-      ((height / 2) - 10) + ") rotate(-33)")
-    .append("text")
+      ((height / 2) - 18) + ") rotate(" + 
+        -1 * lineAngle(y(c), x(maxMins)) +
+     ")");
+  
+  plot.select("#criticalText")
     .attr("text-anchor", "middle")
-    .text("Critical speed = ");
+    .text("Critical speed = " + vText(m));
 
   // Points
 	var points = d3
@@ -136,7 +143,7 @@ addDatum()
     "D&rsquo; = " + dPrimeText(c);
   plot.select("#dPrimeText")
     .attr("x", width)
-    .attr("y", y(c) - (2 * height / 100))
+    .attr("y", y(c) - 12)
     ;
 	
   plot.select("#xAxis")
@@ -159,7 +166,7 @@ addDatum()
     	") rotate(270)")
     
   d3.select("text#yLabel")
-    .text("Distance / m");
+    .text("Distance / " + unit.abbrev);
     
   var ints = d3.select("#intervals tbody");
 	ints.selectAll("tr").remove();

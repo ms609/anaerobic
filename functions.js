@@ -34,12 +34,26 @@ function dPrimeText(dPrime) {
 function vText(speed) {
   return speed.toPrecision(4) + " m/s" + " = " + vToPace(speed);
 }
+  
+function lineAngle(o, a) {
+  return Math.atan(o / a) * 180 / Math.PI;	  	  
+}
  
 if (localStorage.getItem("nData") === null) {
-	localStorage.setItem("dist", [5000, 1609, 10000]);	
-	localStorage.setItem("time", [1111, 298.5, 2300]);	
-	localStorage.setItem("nData", 3);
+  localStorage.setItem("dist", [5000, 1609, 10000]);	
+  localStorage.setItem("time", [1111, 298.5, 2300]);	
+  localStorage.setItem("nData", 3);
 }
+
+var unit = localStorage.getItem("unit") == "mi" ?
+  {
+	abbrev: "mi",
+	m: 1609.344
+  } : {
+	abbrev: "km",
+	m: 1000
+  };
+ 
 
 let dists = localStorage.getItem("dist").split(",");
 let times = localStorage.getItem("time").split(",");
