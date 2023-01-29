@@ -8,6 +8,7 @@ function in_seconds(mins, secs) {
 
 function sToMin (s) {
    let hrs = "", mins = 0;
+   s = s.toFixed(1); // Avoid rounding 299.99 to 4:60.0
    let splitSeconds = s < 10 * secsInMin;
    if (s >= 3600) {
      hrs = Math.floor(s / 3600) + ":";

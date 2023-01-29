@@ -2883,6 +2883,10 @@ input, select, textarea {
 			text-align: center;
 		}
 
+			.statistics li.style0 {
+				background-color: #d7939b;
+			}
+
 			.statistics li.style1 {
 				background-color: #efa8b0;
 			}

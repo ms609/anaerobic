@@ -205,24 +205,38 @@ addDatum()
 			update => update.text(d => d)
 		);
 
-	var races = d3.select("#races tbody");
-	races.selectAll("tr").remove();
-  var raceRows = races.selectAll("tr")
-    .data([1500, 1609, 3000, 5000, 5 * 1609.34, 10000, 16093.4, 21090])
+  var races = d3.select("#raceTargets");
+	races.selectAll("li").remove();
+	
+  var raceTargets = races.selectAll("li")
+    .data([{text: "1mi", metres: 1609},
+           {text: "5k", metres: 5000},
+           {text: "5mi", metres: 5 * 1609.344},
+           {text: "10k",  metres: 10000},
+           {text: "10mi", metres: 16093.44},
+           {text: "½M", metres: 21090}])
     .enter()
-    .append("tr");
+    .append("li")
+    .attr("class", (d, i) => "style" + i);
+    
+  raceTargets
+    .insert("span")
+    .attr("class", "raceDist")
+    .text(d => d.text);
 
-  var raceCells = raceRows.selectAll("td")
-    .data(function(d, i) {
-      let t = (d - dPrime) / criticalSpeed;
-      return [
-        d + " m",
-        sToPace(t * 1000 / d),
-        sToMin(t)
-        ];
+  raceTargets
+    .insert("strong")
+    .text(function(d) {
+      let t = (d.metres - dPrime) / criticalSpeed;
+      return sToMin(t);
     })
-    .enter()
-    .append("td").text(d => d)
+  
+  raceTargets
+  .insert("span")
+    .text(function(d) {
+      let t = (d.metres - dPrime) / criticalSpeed;
+      return sToPace(t * 1000 / d.metres);
+    })
 
   var mara = d3.select("#marathon tbody");
 	mara.selectAll("tr").remove();
