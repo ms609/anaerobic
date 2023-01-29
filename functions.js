@@ -49,10 +49,10 @@ function metricUnits(useMetric) {
   return useMetric ? 
   {
 	abbrev: "km",
-	m: 1000
+	metres: 1000
   } : {
 	abbrev: "mi",
-	m: 1609.344
+	metres: 1609.344
   };
 }
 
