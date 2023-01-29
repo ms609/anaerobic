@@ -63,7 +63,7 @@ addDatum()
  tbar /= n;
 
  // Calculate coefficients
- let xy = 0, yr = 0, term1 = 0, term2 = 0;
+ let term1 = 0, term2 = 0;
  for (let i = 0; i != n; ++i) {
    let xr = time[i] - tbar;
    let yr = distance[i] - dbar;
