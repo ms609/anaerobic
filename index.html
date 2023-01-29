@@ -57,7 +57,7 @@
               <g id="plotFrame">
                 <path id="criticalLine"></path>
                 <path id="criticalExtra"></path>
-                <text id="criticalText"></text>
+                <g id="criticalText"></g>
                 <path id="dPrimeLine" stroke-dasharray="10,10"></path>
                 <text id="dPrimeText" text-anchor="end"></text>
                 <g id="points"></g>
@@ -65,7 +65,9 @@
                 <g id="yAxis"></g>
               </g>
               <text id="xLabel"></text>
-              <text id="yLabel"></text>
+              <g id="gYLabel">
+                <text id="yLabel" text-anchor="middle"></text>
+              </g>
             </svg>
           </div>
         </section>
@@ -76,8 +78,8 @@
             <h2>Analysis</h2>
           </header>
             <div id="output">
-                  <p id="d-prime">D' = <span id="out-dprime">???</span></p>
-                  <p id="d-prime">Critical speed = <span id="out-v">???</span></p>
+                  <p id="d-prime">D' = <span id="outDPrime">???</span></p>
+                  <p id="pCriticalSpeed">Critical speed = <span id="outV">???</span></p>
                   
                   <table id="intervals">
                     <thead>

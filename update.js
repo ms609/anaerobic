@@ -3,7 +3,7 @@ function update() {
 	var
 	  svgWidth = document.getElementById("graph").width.baseVal.value,
 	  svgHeight = document.getElementById("graph").height.baseVal.value,
-		margin = {top: 20, right: 20, bottom: 30, left: 50},
+		margin = {top: 20, right: 20, bottom: 40, left: 70},
 		width = svgWidth - margin.left - margin.right,
 		height = svgHeight - margin.top - margin.bottom
 	;
@@ -43,6 +43,7 @@ function update() {
      distance.push(datum.d);
      time.push(datum.t);
      datum.v = datum.d / datum.t;
+     datum.mins = datum.t / 60; 
      dbar += datum.d;
      tbar += datum.t;
      data.push(datum);
@@ -52,7 +53,7 @@ function update() {
  });
 localStorage.setItem("dist", distance);
 localStorage.setItem("time", time);
-AddDatum()
+addDatum()
 
  let n = distance.length;
  if (n < 2) {
@@ -72,13 +73,12 @@ AddDatum()
 
  var m = term1 / term2;
  var c = dbar - (m * tbar);
- var dPrimeText = c.toPrecision(4) + " m";
- document.getElementById("out-dprime").innerHTML = dPrimeText;
- document.getElementById("out-v").innerHTML =
-   m.toPrecision(4) + " m/s" + " = " +
-    v_to_pace(m);
+ 
+ 
+ document.getElementById("outDPrime").innerHTML = "" + dPrimeText(c);
+ document.getElementById("outV").innerHTML = vText(m);
 
-  x.domain([0, d3.max(data, d => d.t)]);
+  x.domain([0, d3.max(data, d => d.mins)]);
   y.domain([0, d3.max(data, d => d.d)]);
 
   // Line of best fit
@@ -89,8 +89,16 @@ AddDatum()
       "d",
        d3.line()
         .x(d => x(d))
-        .y(d => y((m * d) + c))
-    );
+        .y(d => y((m * d * secsInMin) + c))
+  );
+  
+  plot.select("#criticalText")
+    .attr("transform", "translate(" + 
+      (width / 2) + ", " +
+      ((height / 2) - 10) + ") rotate(-33)")
+    .append("text")
+    .attr("text-anchor", "middle")
+    .text("Critical speed = ");
 
   // Points
 	var points = d3
@@ -100,13 +108,13 @@ AddDatum()
 		.join(
 			enter =>
 				enter.append("circle")
-		      .attr("cx", d => x(d.t))
+		      .attr("cx", d => x(d.mins))
 		      .attr("cy", d => y(d.d))
 		      .attr("r", 3.5)
 		      .attr("class", "datumPoint"),
 			update =>
 				update
-		      .attr("cx", d => x(d.t))
+		      .attr("cx", d => x(d.mins))
 		      .attr("cy", d => y(d.d))
 		      .attr("r", 3.5)
 		      .attr("class", "datumPoint"),
@@ -125,10 +133,10 @@ AddDatum()
 	);
 	
   document.getElementById("dPrimeText").innerHTML = 
-    "D&rsquo; = " + dPrimeText;
+    "D&rsquo; = " + dPrimeText(c);
   plot.select("#dPrimeText")
     .attr("x", width)
-    .attr("y", y(c) - (2 * height/ 100))
+    .attr("y", y(c) - (2 * height / 100))
     ;
 	
   plot.select("#xAxis")
@@ -139,17 +147,19 @@ AddDatum()
     .attr("text-anchor", "middle")
     .attr("x", margin.left + (width / 2))
     .attr("y", height + margin.top + margin.bottom)
-    .text("Time");
+    .text("Time / min");
 
   plot.select("#yAxis")
-   .call(d3.axisLeft(y));
+   .call(d3.axisLeft(y).tickFormat(d3.format(".2s")));
    
+  d3.select("#gYLabel")
+    .attr("transform", "translate(" + 
+    	margin.left / 3 + "," +
+    	(height / 2 + margin.top) +
+    	") rotate(270)")
+    
   d3.select("text#yLabel")
-    .attr("text-anchor", "middle")
-    .attr("transform", "rotate(90)")
-    .attr("x", margin.left / 2)
-    .attr("y", height / 2 + margin.top)
-    .text("Distance");
+    .text("Distance / m");
     
   var ints = d3.select("#intervals tbody");
 	ints.selectAll("tr").remove();
@@ -170,16 +180,16 @@ AddDatum()
     .data(function(d, i) {
       return [
         d + " m",
-        v_to_pace(v_at(d, 100)),
-        v_to_pace(v_at(d, 80)),
-        s_to_min(t_at(d, 80)),
-        s_to_min(t_at(d, 80) * 1.5),
-        v_to_pace(v_at(d, 60)),
-        s_to_min(t_at(d, 60)),
-        s_to_min(t_at(d, 60)),
-        v_to_pace(v_at(d, 40)),
-        s_to_min(t_at(d, 40)),
-        s_to_min(t_at(d, 40) * 0.5)
+        vToPace(v_at(d, 100)),
+        vToPace(v_at(d, 80)),
+        sToMin(t_at(d, 80)),
+        sToMin(t_at(d, 80) * 1.5),
+        vToPace(v_at(d, 60)),
+        sToMin(t_at(d, 60)),
+        sToMin(t_at(d, 60)),
+        vToPace(v_at(d, 40)),
+        sToMin(t_at(d, 40)),
+        sToMin(t_at(d, 40) * 0.5)
         ];
     })
     .join(
@@ -199,8 +209,8 @@ AddDatum()
       let t = (d - c) / m;
       return [
         d + " m",
-        s_to_pace(t * 1000 / d),
-        s_to_min(t)
+        sToPace(t * 1000 / d),
+        sToMin(t)
         ];
     })
     .enter()
@@ -218,8 +228,8 @@ AddDatum()
       let v = m * d / 100;
       return [
         d + " %",
-        v_to_pace(v),
-        s_to_min(42195 / v)
+        vToPace(v),
+        sToMin(42195 / v)
         ];
     })
     .enter()
