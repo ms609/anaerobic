@@ -17,7 +17,10 @@ function update() {
      		"translate(" + margin.left + "," + margin.top + ")");
 
 
- var data = [], distance = [], time = [], dbar = 0, tbar = 0, i = 0;
+ var data = [], distance = [], time = [],
+     dbar = 0, tbar = 0,
+     
+     i = 0;
  d3.selectAll(".input").each(function(d) {
    let datum = {};
    datum.d = +d3.select(this).select("input.distance").property("value");
@@ -26,7 +29,11 @@ function update() {
 	   d3.select(this).select("input.mins").property("value"),
 	   sec_value
    );
-   if (sec_value < 10 && sec_value[0] != "0") {
+   if (sec_value < 10 && (
+	   	sec_value[0] != "0"
+	    || sec_value[0] == "0" && sec_value[1] == "."
+	   )
+	   ) {
 	   d3.select(this).select("input.secs").property("value",
 	   "0" + sec_value);
    }
@@ -39,8 +46,13 @@ function update() {
      dbar += datum.d;
      tbar += datum.t;
      data.push(datum);
+   } else if (datum.d == 0 && datum.t == 0) {
+	 d3.select(this).remove();
    }
  });
+localStorage.setItem("dist", distance);
+localStorage.setItem("time", time);
+AddDatum()
 
  let n = distance.length;
  if (n < 2) {
@@ -58,28 +70,10 @@ function update() {
    term2 += xr * xr;
  }
 
- function s_to_min (s) {
-   let hrs = "", mins = 0;
-   if (s >= 3600) {
-     hrs = Math.floor(s / 3600) + ":";
-     s = s % 3600;
-     mins = (Math.floor(s / 60) + "").padStart(2, "0");
-   } else {
-     mins = Math.floor(s / 60);
-   }
-   return hrs + mins + ":" +
-    (Math.round(s * 10 % 600) / 10).toFixed(1).padStart(4, "0");
- }
- function s_to_pace(s) {
-  return s_to_min(s)  + " min / km";
- }
- function v_to_pace(v) {
-  return s_to_pace(1000 / v);
- }
-
  var m = term1 / term2;
  var c = dbar - (m * tbar);
- document.getElementById("out-dprime").innerHTML = c.toPrecision(4) + " m";
+ var dPrimeText = c.toPrecision(4) + " m";
+ document.getElementById("out-dprime").innerHTML = dPrimeText;
  document.getElementById("out-v").innerHTML =
    m.toPrecision(4) + " m/s" + " = " +
     v_to_pace(m);
@@ -88,8 +82,8 @@ function update() {
   y.domain([0, d3.max(data, d => d.d)]);
 
   // Line of best fit
-  plot.select("#fitLine")
-    .datum([0, 400, 10000])
+  plot.select("#criticalLine")
+    .datum([0, 10000])
     .attr("class", "line")
     .attr(
       "d",
@@ -109,23 +103,54 @@ function update() {
 		      .attr("cx", d => x(d.t))
 		      .attr("cy", d => y(d.d))
 		      .attr("r", 3.5)
-		      .style("fill", "#d86713"),
+		      .attr("class", "datumPoint"),
 			update =>
 				update
 		      .attr("cx", d => x(d.t))
 		      .attr("cy", d => y(d.d))
 		      .attr("r", 3.5)
-		      .style("fill", "#d86713"),
+		      .attr("class", "datumPoint"),
 			exit => exit.remove()
 		);
 
+
+  // D' line
+  plot.select("#dPrimeLine")
+    .datum([0, 10000])
+    .attr(
+		"d",
+		d3.line()
+		  .x(d => x(d))
+		  .y(d => y(c))
+	);
+	
+  document.getElementById("dPrimeText").innerHTML = 
+    "D&rsquo; = " + dPrimeText;
+  plot.select("#dPrimeText")
+    .attr("x", width)
+    .attr("y", y(c) - (2 * height/ 100))
+    ;
+	
   plot.select("#xAxis")
    .attr("transform", "translate(0," + height + ")")
    .call(d3.axisBottom(x));
+   
+  d3.select("text#xLabel")
+    .attr("text-anchor", "middle")
+    .attr("x", margin.left + (width / 2))
+    .attr("y", height + margin.top + margin.bottom)
+    .text("Time");
 
   plot.select("#yAxis")
    .call(d3.axisLeft(y));
-
+   
+  d3.select("text#yLabel")
+    .attr("text-anchor", "middle")
+    .attr("transform", "rotate(90)")
+    .attr("x", margin.left / 2)
+    .attr("y", height / 2 + margin.top)
+    .text("Distance");
+    
   var ints = d3.select("#intervals tbody");
 	ints.selectAll("tr").remove();
   var intRows = ints.selectAll("tr")

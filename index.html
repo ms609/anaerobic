@@ -18,17 +18,17 @@
       <!-- Header -->
       <header id="header" class="alt">
         <span class="logo"><img src="images/logo.svg" alt="" /></span>
-        <h1>Anaerobic reserve training</h1>
-        <p>Using anaerobic reserve to prescribe running training and predict race times.</p>
+        <h1>Train by anaerobic reserve</h1>
+        <p>Use anaerobic reserve and critical pace to prescribe running training and predict race times</p>
       </header>
 
       <!-- Nav -->
       <nav id="nav">
         <ul>
-          <li><a href="#intro" class="active">Introduction</a></li>
-          <li><a href="#first">First Section</a></li>
-          <li><a href="#second">Second Section</a></li>
-          <li><a href="#cta">Get Started</a></li>
+          <li><a href="#intro" class="active">Results</a></li>
+          <li><a href="#first">Analysis</a></li>
+          <li><a href="#second">More information</a></li>
+          <li><a href="#cta">References</a></li>
         </ul>
       </nav>
 
@@ -55,11 +55,17 @@
             </div>
             <svg id="graph" width="400" height="300">
               <g id="plotFrame">
-                <path id="fitLine"></path>
+                <path id="criticalLine"></path>
+                <path id="criticalExtra"></path>
+                <text id="criticalText"></text>
+                <path id="dPrimeLine" stroke-dasharray="10,10"></path>
+                <text id="dPrimeText" text-anchor="end"></text>
                 <g id="points"></g>
                 <g id="xAxis"></g>
                 <g id="yAxis"></g>
               </g>
+              <text id="xLabel"></text>
+              <text id="yLabel"></text>
             </svg>
           </div>
         </section>

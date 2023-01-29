@@ -1,5 +1,23 @@
-.line {
+#criticalLine {
    fill: none;
-   stroke: green;
+   stroke: #8cc9f0;
    stroke-width: 2px;
+}
+
+#criticalText {
+  fill: #8cc9f0;
+}
+
+#dPrimeLine {
+  fill: none;
+  stroke: #efa8b0;
+  stroke-width: 2px;
+}
+
+#dPrimeText {
+  fill: #efa8b0;
+}
+
+.datumPoint {
+  fill: #a89cc8;
 }
