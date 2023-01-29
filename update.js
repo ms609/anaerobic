@@ -71,12 +71,12 @@ addDatum()
    term2 += xr * xr;
  }
 
- var m = term1 / term2;
- var c = dbar - (m * tbar);
+ var criticalSpeed = term1 / term2;
+ var dPrime = dbar - (criticalSpeed * tbar);
  
  
- document.getElementById("outDPrime").innerHTML = "" + dPrimeText(c);
- document.getElementById("outV").innerHTML = vText(m);
+ document.getElementById("outDPrime").innerHTML = "" + dPrimeText(dPrime);
+ document.getElementById("outV").innerHTML = vText(criticalSpeed);
 
   let maxMins = d3.max(data, d => d.mins);
   let maxDist = d3.max(data, d => d.d);
@@ -91,19 +91,19 @@ addDatum()
       "d",
        d3.line()
         .x(d => x(d))
-        .y(d => y((m * d * secsInMin) + c))
+        .y(d => y((criticalSpeed * d * secsInMin) + dPrime))
   );
   
   plot.select("#gCriticalText")
     .attr("transform", "translate(" + 
       (width / 2) + ", " +
       ((height / 2) - 18) + ") rotate(" + 
-        -1 * lineAngle(y(c), x(maxMins)) +
+        -1 * lineAngle(y(dPrime), x(maxMins)) +
      ")");
   
   plot.select("#criticalText")
     .attr("text-anchor", "middle")
-    .text("Critical speed = " + vText(m));
+    .text("Critical speed = " + vText(criticalSpeed));
 
   // Points
 	var points = d3
@@ -134,11 +134,11 @@ addDatum()
 		"d",
 		d3.line()
 		  .x(d => x(d))
-		  .y(d => y(c))
+		  .y(d => y(dPrime))
 	);
 	
   document.getElementById("dPrimeText").innerHTML = 
-    "D&rsquo; = " + dPrimeText(c);
+    "D&rsquo; = " + dPrimeText(dPrime);
   plot.select("#dPrimeText")
     .attr("x", width)
     .attr("y", y(c) - 12)
@@ -174,11 +174,11 @@ addDatum()
     .append("tr");
 
 	function t_at(d, pc) {
-	  return (d - (c * pc / 100)) / m;
+	  return (d - (dPrime * pc / 100)) / criticalSpeed;
 	}
 
 	function v_at(d, pc) {
-	  return (c * pc / 100) / t_at(d, pc) + m;
+	  return (dPrime * pc / 100) / t_at(d, pc) + criticalSpeed;
 	}
 
 	var intCells = intRows.selectAll("td")
@@ -211,7 +211,7 @@ addDatum()
 
   var raceCells = raceRows.selectAll("td")
     .data(function(d, i) {
-      let t = (d - c) / m;
+      let t = (d - dPrime) / criticalSpeed;
       return [
         d + " m",
         sToPace(t * 1000 / d),
@@ -230,7 +230,7 @@ addDatum()
 
   var maraCells = maraRows.selectAll("td")
     .data(function(d) {
-      let v = m * d / 100;
+      let v = criticalSpeed * d / 100;
       return [
         d + " %",
         vToPace(v),
