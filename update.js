@@ -209,12 +209,12 @@ addDatum()
 	races.selectAll("li").remove();
 	
   var raceTargets = races.selectAll("li")
-    .data([{text: "1mi", metres: 1609},
+    .data([{text: "Mile", metres: 1609},
            {text: "5k", metres: 5000},
-           {text: "5mi", metres: 5 * 1609.344},
+           {text: "5\x20mi", metres: 5 * 1609.344},
            {text: "10k",  metres: 10000},
-           {text: "10mi", metres: 16093.44},
-           {text: "½M", metres: 21090}])
+           {text: "10\x20mi", metres: 16093.44},
+           {text: "½\x20M", metres: 21090}])
     .enter()
     .append("li")
     .attr("class", (d, i) => "style" + i);
