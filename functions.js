@@ -8,6 +8,7 @@ function in_seconds(mins, secs) {
 
 function sToMin (s) {
    let hrs = "", mins = 0;
+   let splitSeconds = s < 10 * secsInMin;
    if (s >= 3600) {
      hrs = Math.floor(s / 3600) + ":";
      s = s % 3600;
@@ -16,11 +17,17 @@ function sToMin (s) {
      mins = Math.floor(s / 60);
    }
    return hrs + mins + ":" +
-    (Math.round(s * 10 % 600) / 10).toFixed(1).padStart(4, "0");
+    (splitSeconds ?
+    (Math.round(s * 10 % 600) / 10)
+      .toFixed(1)
+      .padStart(4, "0")
+      : 
+      (Math.round(s % 60) + "").padStart(2, "0")
+     ) ;
 }
 
 function sToPace(s) {
-  return sToMin(s)  + " / km";
+  return sToMin(s * unit.km) + " / " + unit.abbrev;
 }
 
 function vToPace(v) {
@@ -49,10 +56,12 @@ function metricUnits(useMetric) {
   return useMetric ? 
   {
 	abbrev: "km",
-	metres: 1000
+	metres: 1000,
+	km: 1
   } : {
 	abbrev: "mi",
-	metres: 1609.344
+	metres: 1609.344,
+	km: 1.609344
   };
 }
 
