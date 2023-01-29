@@ -81,7 +81,7 @@ addDatum()
   let maxMins = d3.max(data, d => d.mins);
   let maxDist = d3.max(data, d => d.d);
   x.domain([0, maxMins]);
-  y.domain([0, maxDist]);
+  y.domain([0, maxDist / unit.metres]);
 
   // Line of best fit
   plot.select("#criticalLine")
@@ -91,14 +91,17 @@ addDatum()
       "d",
        d3.line()
         .x(d => x(d))
-        .y(d => y((criticalSpeed * d * secsInMin) + dPrime))
+        .y(d => y(
+			((criticalSpeed * d * secsInMin) + dPrime) /
+			unit.metres)
+		)
   );
   
   plot.select("#gCriticalText")
     .attr("transform", "translate(" + 
       (width / 2) + ", " +
       ((height / 2) - 18) + ") rotate(" + 
-        -1 * lineAngle(y(dPrime), x(maxMins)) +
+        -1 * lineAngle(y(dPrime / unit.metres), x(maxMins)) +
      ")");
   
   plot.select("#criticalText")
@@ -106,21 +109,21 @@ addDatum()
     .text("Critical speed = " + vText(criticalSpeed));
 
   // Points
-	var points = d3
-	  .select("#points")
-		.selectAll("circle")
+  var points = d3
+	.select("#points")
+	.selectAll("circle")
 	  .data(data, d => d.row)
 		.join(
 			enter =>
 				enter.append("circle")
 		      .attr("cx", d => x(d.mins))
-		      .attr("cy", d => y(d.d))
+		      .attr("cy", d => y(d.d / unit.metres))
 		      .attr("r", 3.5)
 		      .attr("class", "datumPoint"),
 			update =>
 				update
 		      .attr("cx", d => x(d.mins))
-		      .attr("cy", d => y(d.d))
+		      .attr("cy", d => y(d.d / unit.metres))
 		      .attr("r", 3.5)
 		      .attr("class", "datumPoint"),
 			exit => exit.remove()
@@ -134,14 +137,14 @@ addDatum()
 		"d",
 		d3.line()
 		  .x(d => x(d))
-		  .y(d => y(dPrime))
+		  .y(d => y(dPrime / unit.metres))
 	);
 	
   document.getElementById("dPrimeText").innerHTML = 
     "D&rsquo; = " + dPrimeText(dPrime);
   plot.select("#dPrimeText")
     .attr("x", width)
-    .attr("y", y(c) - 12)
+    .attr("y", y(dPrime / unit.metres) - 12)
     ;
 	
   plot.select("#xAxis")
@@ -155,14 +158,14 @@ addDatum()
     .text("Time / min");
 
   plot.select("#yAxis")
-   .call(d3.axisLeft(y).tickFormat(d3.format(".2s")));
+   .call(d3.axisLeft(y));
    
   d3.select("#gYLabel")
     .attr("transform", "translate(" + 
     	margin.left / 3 + "," +
     	(height / 2 + margin.top) +
     	") rotate(270)")
-    
+   
   d3.select("text#yLabel")
     .text("Distance / " + unit.abbrev);
     
