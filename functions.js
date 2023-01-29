@@ -45,15 +45,22 @@ if (localStorage.getItem("nData") === null) {
   localStorage.setItem("nData", 3);
 }
 
-var unit = localStorage.getItem("unit") == "mi" ?
+function metricUnits(useMetric) {
+  return useMetric ? 
   {
-	abbrev: "mi",
-	m: 1609.344
-  } : {
 	abbrev: "km",
 	m: 1000
+  } : {
+	abbrev: "mi",
+	m: 1609.344
   };
+}
+
+var unit = metricUnits(localStorage.getItem("useMetric") !== "false");
  
+if (unit.abbrev == "mi") {
+  document.getElementById("useMetric").checked = false;
+}
 
 let dists = localStorage.getItem("dist").split(",");
 let times = localStorage.getItem("time").split(",");

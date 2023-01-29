@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/slider.css" />
     <link rel="stylesheet" href="assets/css/js.css" />
     <link rel="stylesheet" href="assets/css/svg.css"/>
     <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -49,9 +50,18 @@
                 <div id="inputs">
                 </div>
               </div>
-              <!--ul class="actions">
-                <li><a href="generic.html" class="button">Learn More</a></li>
-              </ul-->
+              <div class="sliderDiv">
+                <span>Metric&nbsp;</span>
+                <label class="switch">
+                  <input id="useMetric" type="checkbox" checked onchange="updateUnits();">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <ul class="actions">
+                <!--li><a href="generic.html" class="button">Learn More</a></li-->
+                <li>
+                </li>
+              </ul>
             </div>
             <svg id="graph" width="400" height="300">
               <g id="plotFrame">

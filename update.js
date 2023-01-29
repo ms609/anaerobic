@@ -94,8 +94,6 @@ addDatum()
         .y(d => y((m * d * secsInMin) + c))
   );
   
-  console.log(x(maxMins))
-  console.log(y(c))
   plot.select("#gCriticalText")
     .attr("transform", "translate(" + 
       (width / 2) + ", " +
@@ -231,7 +229,7 @@ addDatum()
     .append("tr");
 
   var maraCells = maraRows.selectAll("td")
-    .data(function(d, i) {
+    .data(function(d) {
       let v = m * d / 100;
       return [
         d + " %",
@@ -241,4 +239,10 @@ addDatum()
     })
     .enter()
     .append("td").text(d => d)
+}
+
+function updateUnits() {
+  let useMetric = document.getElementById("useMetric").checked;
+  localStorage.setItem("useMetric", useMetric);
+  unit = metricUnits(useMetric);
 }

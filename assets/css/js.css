@@ -22,13 +22,13 @@ input.mins {
   width: 3em;
 }
 
-input:invalid + span::after {
+input.validated:invalid + span::after {
   position: absolute;
   content: "✖";
   padding-left: 5px;
 }
 
-input:valid + span::after {
+input.validated:valid + span::after {
   position: absolute;
   content: "✓";
   padding-left: 5px;
